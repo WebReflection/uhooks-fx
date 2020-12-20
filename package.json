@@ -44,7 +44,7 @@
   },
   "unpkg": "min.js",
   "dependencies": {
-    "uhooks": "^0.1.16"
+    "uhooks": "^0.1.17"
   },
   "repository": {
     "type": "git",
