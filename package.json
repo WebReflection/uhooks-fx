@@ -1,6 +1,6 @@
 {
   "name": "uhooks-fx",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "uhooks with propagated states",
   "main": "./cjs/index.js",
   "scripts": {
