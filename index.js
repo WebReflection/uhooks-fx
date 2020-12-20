@@ -1,4 +1,4 @@
-self.uhooksFx = (function (exports) {
+self.uhooksFX = (function (exports) {
   'use strict';
 
   var Lie = typeof Promise === 'function' ? Promise : function (fn) {
@@ -271,7 +271,7 @@ self.uhooksFx = (function (exports) {
   exports.useState = useState$1;
   exports.wait = wait;
 
-  Object.defineProperty(exports, '__esModule', { value: true });
+  
 
   return exports;
 

@@ -16,6 +16,6 @@ export default {
     exports: 'named',
     file: './index.js',
     format: 'iife',
-    name: 'uhooksFx'
+    name: 'uhooksFX'
   }
 };
