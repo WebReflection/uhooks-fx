@@ -7,19 +7,19 @@ import {
   wait
 } from 'uhooks';
 
-let fx = null;
+let h = null, c = null, a = null;
 
-const effects = new WeakMap;
+const fx = new WeakMap;
 
-const wrap = (fx, reduced) => (
-  fx ? [
+const wrap = (h, c, a, reduced) => (
+  h ? [
     reduced[0],
     value => {
-      if (!effects.has(fx)) {
-        effects.set(fx, 0);
+      if (!fx.has(h)) {
+        fx.set(h, 0);
         wait.then(() => {
-          effects.delete(fx);
-          fx();
+          fx.delete(h);
+          h.apply(c, a);
         });
       }
       reduced[1](value);
@@ -31,22 +31,22 @@ const wrap = (fx, reduced) => (
 export const hooked = (callback, outer) => $hooked(
   outer ?
     function hook() {
-      const prev = fx;
-      fx = hook;
+      const [ph, pc, pa] = [h, c, a];
+      [h, c, a] = [hook, this, arguments];
       try {
-        return callback.apply(this, arguments);
+        return callback.apply(c, a);
       }
       finally {
-        fx = prev;
+        [h, c, a] = [ph, pc, pa];
       }
     } :
     callback
 );
 
 export const useReducer = (reducer, value, init) =>
-                            wrap(fx, $useReducer(reducer, value, init));
+                            wrap(h, c, a, $useReducer(reducer, value, init));
 
-export const useState = value => wrap(fx, $useState(value));
+export const useState = value => wrap(h, c, a, $useState(value));
 
 export {
   dropEffect, hasEffect, wait,
