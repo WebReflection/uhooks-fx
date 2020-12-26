@@ -11,22 +11,29 @@ const {
 let h = null, c = null, a = null;
 
 const fx = new WeakMap;
+const states = new WeakMap;
 
-const wrap = (h, c, a, reduced) => (
-  h ? [
-    reduced[0],
-    value => {
-      if (!fx.has(h)) {
-        fx.set(h, 0);
-        wait.then(() => {
-          fx.delete(h);
-          h.apply(c, a);
-        });
-      }
-      reduced[1](value);
+const set = (h, c, a, update) => {
+  const wrap = value => {
+    if (!fx.has(h)) {
+      fx.set(h, 0);
+      wait.then(() => {
+        fx.delete(h);
+        h.apply(c, a);
+      });
     }
+    update(value);
+  };
+  states.set(update, wrap);
+  return wrap;
+};
+
+const wrap = (h, c, a, state) => (
+  h ? [
+    state[0],
+    states.get(state[1]) || set(h, c, a, state[1])
   ] :
-  reduced
+  state
 );
 
 const hooked = (callback, outer) => $hooked(
