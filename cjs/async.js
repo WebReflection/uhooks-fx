@@ -6,7 +6,7 @@ const {
   useReducer: $useReducer,
   useState: $useState,
   wait
-} = require('uhooks');
+} = require('uhooks/async');
 
 let h = null, c = null, a = null;
 
@@ -38,11 +38,11 @@ const wrap = (h, c, a, state) => (
 
 const hooked = (callback, outer) => $hooked(
   outer ?
-    /*async*/ function hook() {
+    async function hook() {
       const [ph, pc, pa] = [h, c, a];
       [h, c, a] = [hook, this, arguments];
       try {
-        return /*await*/ callback.apply(c, a);
+        return await callback.apply(c, a);
       }
       finally {
         [h, c, a] = [ph, pc, pa];
@@ -70,4 +70,4 @@ exports.useState = useState;
   exports.useEffect = m.useEffect;
   exports.useLayoutEffect = m.useLayoutEffect;
   exports.useRef = m.useRef;
-})(require('uhooks'));
+})(require('uhooks/async'));

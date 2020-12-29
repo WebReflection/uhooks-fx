@@ -2,6 +2,8 @@
 
 This module allows reduced/state updates to propagate to an outer hook, avoiding duplicated execution of inner hooks for libraries that have contained updates such as [<em>µ</em>land](https://github.com/WebReflection/uland#readme).
 
+This module exports same utilities via `uhooks-fx/async`, which is based on `uhooks/async` for asynchronous hooks. 
+
 ### Example
 ```js
 const test = ({hooked, dropEffect, useEffect, useState}) => {

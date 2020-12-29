@@ -5,7 +5,7 @@ import {
   useReducer as $useReducer,
   useState as $useState,
   wait
-} from 'uhooks';
+} from 'uhooks/async';
 
 let h = null, c = null, a = null;
 
@@ -37,11 +37,11 @@ const wrap = (h, c, a, state) => (
 
 export const hooked = (callback, outer) => $hooked(
   outer ?
-    /*async*/ function hook() {
+    async function hook() {
       const [ph, pc, pa] = [h, c, a];
       [h, c, a] = [hook, this, arguments];
       try {
-        return /*await*/ callback.apply(c, a);
+        return await callback.apply(c, a);
       }
       finally {
         [h, c, a] = [ph, pc, pa];
@@ -61,4 +61,4 @@ export {
   useCallback, useMemo,
   useEffect, useLayoutEffect,
   useRef
-} from 'uhooks';
+} from 'uhooks/async';

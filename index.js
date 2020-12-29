@@ -252,7 +252,9 @@ self.uhooksFX = (function (exports) {
   };
 
   var hooked$1 = function hooked$1(callback, outer) {
-    return hooked(outer ? function hook() {
+    return hooked(outer ?
+    /*async*/
+    function hook() {
       var ph = h$1,
           pc = c,
           pa = a;
@@ -261,7 +263,10 @@ self.uhooksFX = (function (exports) {
       a = arguments;
 
       try {
-        return callback.apply(c, a);
+        return (
+          /*await*/
+          callback.apply(c, a)
+        );
       } finally {
         h$1 = ph;
         c = pc;
