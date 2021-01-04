@@ -252,9 +252,9 @@ self.uhooksFX = (function (exports) {
   };
 
   var hooked$1 = function hooked$1(callback, outer) {
-    return hooked(outer ?
+    var hook = hooked(outer ?
     /*async*/
-    function hook() {
+    function () {
       var ph = h$1,
           pc = c,
           pa = a;
@@ -273,6 +273,7 @@ self.uhooksFX = (function (exports) {
         a = pa;
       }
     } : callback);
+    return hook;
   };
   var useReducer$1 = function useReducer$1(reducer, value, init) {
     return wrap(h$1, c, a, useReducer(reducer, value, init));

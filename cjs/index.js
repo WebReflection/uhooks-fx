@@ -36,20 +36,23 @@ const wrap = (h, c, a, state) => (
   state
 );
 
-const hooked = (callback, outer) => $hooked(
-  outer ?
-    /*async*/ function hook() {
-      const [ph, pc, pa] = [h, c, a];
-      [h, c, a] = [hook, this, arguments];
-      try {
-        return /*await*/ callback.apply(c, a);
-      }
-      finally {
-        [h, c, a] = [ph, pc, pa];
-      }
-    } :
-    callback
-);
+const hooked = (callback, outer) => {
+  const hook = $hooked(
+    outer ?
+      /*async*/ function () {
+        const [ph, pc, pa] = [h, c, a];
+        [h, c, a] = [hook, this, arguments];
+        try {
+          return /*await*/ callback.apply(c, a);
+        }
+        finally {
+          [h, c, a] = [ph, pc, pa];
+        }
+      } :
+      callback
+  );
+  return hook;
+};
 exports.hooked = hooked;
 
 const useReducer = (reducer, value, init) =>
