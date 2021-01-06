@@ -19,9 +19,8 @@ self.uhooksFX = (function (exports) {
     }
   };
 
-  var h = null,
+  var info = null,
       schedule = new Set();
-  var hooks = new WeakMap();
 
   var invoke = function invoke(effect) {
     var $ = effect.$,
@@ -67,7 +66,7 @@ self.uhooksFX = (function (exports) {
     });
   };
   var getInfo = function getInfo() {
-    return hooks.get(h);
+    return info;
   };
   var hasEffect = function hasEffect(hook) {
     return fx.has(hook);
@@ -76,7 +75,7 @@ self.uhooksFX = (function (exports) {
     return typeof f === 'function';
   };
   var hooked = function hooked(callback) {
-    var info = {
+    var current = {
       h: hook,
       c: null,
       a: null,
@@ -84,18 +83,17 @@ self.uhooksFX = (function (exports) {
       i: 0,
       s: []
     };
-    hooks.set(hook, info);
     return hook;
 
     function hook() {
-      var p = h;
-      h = hook;
-      info.e = info.i = 0;
+      var prev = info;
+      info = current;
+      current.e = current.i = 0;
 
       try {
-        return callback.apply(info.c = this, info.a = arguments);
+        return callback.apply(current.c = this, current.a = arguments);
       } finally {
-        h = p;
+        info = prev;
         if (effects.length) wait.then(effects.forEach.bind(effects.splice(0), invoke));
         if (layoutEffects.length) layoutEffects.splice(0).forEach(invoke);
       }
@@ -224,7 +222,7 @@ self.uhooksFX = (function (exports) {
   };
 
   /*! (c) Andrea Giammarchi - ISC */
-  var h$1 = null,
+  var h = null,
       c = null,
       a = null;
   var fx$1 = new WeakMap();
@@ -255,10 +253,10 @@ self.uhooksFX = (function (exports) {
     var hook = hooked(outer ?
     /*async*/
     function () {
-      var ph = h$1,
+      var ph = h,
           pc = c,
           pa = a;
-      h$1 = hook;
+      h = hook;
       c = this;
       a = arguments;
 
@@ -268,7 +266,7 @@ self.uhooksFX = (function (exports) {
           callback.apply(c, a)
         );
       } finally {
-        h$1 = ph;
+        h = ph;
         c = pc;
         a = pa;
       }
@@ -276,10 +274,10 @@ self.uhooksFX = (function (exports) {
     return hook;
   };
   var useReducer$1 = function useReducer$1(reducer, value, init) {
-    return wrap(h$1, c, a, useReducer(reducer, value, init));
+    return wrap(h, c, a, useReducer(reducer, value, init));
   };
   var useState$1 = function useState$1(value) {
-    return wrap(h$1, c, a, useState(value));
+    return wrap(h, c, a, useState(value));
   };
 
   exports.createContext = createContext;

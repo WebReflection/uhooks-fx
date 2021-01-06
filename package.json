@@ -30,7 +30,7 @@
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-node-resolve": "^11.0.1",
     "ascjs": "^4.0.3",
-    "rollup": "^2.35.1",
+    "rollup": "^2.36.0",
     "rollup-plugin-includepaths": "^0.2.4",
     "rollup-plugin-terser": "^7.0.2",
     "terser": "^5.5.1"
@@ -50,7 +50,7 @@
   },
   "unpkg": "min.js",
   "dependencies": {
-    "uhooks": "^0.2.0"
+    "uhooks": "^0.2.2"
   },
   "repository": {
     "type": "git",
