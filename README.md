@@ -1,5 +1,7 @@
 # <em>µ</em>hooks-fx
 
+[![CSP strict](https://webreflection.github.io/csp/strict.svg)](https://webreflection.github.io/csp/#-csp-strict)
+
 This module allows reduced/state updates to propagate to an outer hook, avoiding duplicated execution of inner hooks for libraries that have contained updates such as [<em>µ</em>land](https://github.com/WebReflection/uland#readme).
 
 This module exports same utilities via `uhooks-fx/async`, which is based on `uhooks/async` for asynchronous hooks.
