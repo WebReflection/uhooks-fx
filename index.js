@@ -28,11 +28,11 @@ self.uhooksFX = (function (exports) {
         h = effect.h;
 
     if (isFunction(r)) {
-      fx.get(h)["delete"](effect);
+      fx$1.get(h)["delete"](effect);
       r();
     }
 
-    if (isFunction(effect.r = $())) fx.get(h).add(effect);
+    if (isFunction(effect.r = $())) fx$1.get(h).add(effect);
   };
 
   var runSchedule = function runSchedule() {
@@ -49,18 +49,19 @@ self.uhooksFX = (function (exports) {
     });
   };
 
-  var fx = new WeakMap();
+  var fx$1 = new WeakMap();
   var effects = [];
   var layoutEffects = [];
   function different(value, i) {
     return value !== this[i];
   }
   var dropEffect = function dropEffect(hook) {
-    var effects = fx.get(hook);
+    var effects = fx$1.get(hook);
     if (effects) wait.then(function () {
       effects.forEach(function (effect) {
         effect.r();
         effect.r = null;
+        effect.d = true;
       });
       effects.clear();
     });
@@ -69,12 +70,12 @@ self.uhooksFX = (function (exports) {
     return info;
   };
   var hasEffect = function hasEffect(hook) {
-    return fx.has(hook);
+    return fx$1.has(hook);
   };
   var isFunction = function isFunction(f) {
     return typeof f === 'function';
   };
-  var hooked = function hooked(callback) {
+  var hooked$1 = function hooked(callback) {
     var current = {
       h: hook,
       c: null,
@@ -169,16 +170,17 @@ self.uhooksFX = (function (exports) {
       info.i++;
 
       if (call) {
-        if (!fx.has(h)) fx.set(h, new Set());
+        if (!fx$1.has(h)) fx$1.set(h, new Set());
         s[i] = {
           $: callback,
           _: guards,
           r: null,
+          d: false,
           h: h
         };
       }
 
-      if (call || !guards || guards.some(different, s[i]._)) stack.push(s[i]);
+      if (call || !guards || s[i].d || guards.some(different, s[i]._)) stack.push(s[i]);
       s[i].$ = callback;
       s[i]._ = guards;
     };
@@ -191,7 +193,7 @@ self.uhooksFX = (function (exports) {
     return isFunction(f) ? f(value) : f;
   };
 
-  var useReducer = function useReducer(reducer, value, init) {
+  var useReducer$1 = function useReducer(reducer, value, init) {
     var info = getInfo();
     var i = info.i,
         s = info.s;
@@ -207,8 +209,8 @@ self.uhooksFX = (function (exports) {
         set = _s$info$i.set;
     return [$, set];
   };
-  var useState = function useState(value) {
-    return useReducer(getValue, value);
+  var useState$1 = function useState(value) {
+    return useReducer$1(getValue, value);
   };
 
   var useRef = function useRef(current) {
@@ -225,15 +227,15 @@ self.uhooksFX = (function (exports) {
   var h = null,
       c = null,
       a = null;
-  var fx$1 = new WeakMap();
+  var fx = new WeakMap();
   var states = new WeakMap();
 
   var set = function set(h, c, a, update) {
     var wrap = function wrap(value) {
-      if (!fx$1.has(h)) {
-        fx$1.set(h, 0);
+      if (!fx.has(h)) {
+        fx.set(h, 0);
         wait.then(function () {
-          fx$1["delete"](h);
+          fx["delete"](h);
           h.apply(c, a);
         });
       }
@@ -249,8 +251,8 @@ self.uhooksFX = (function (exports) {
     return h ? [state[0], states.get(state[1]) || set(h, c, a, state[1])] : state;
   };
 
-  var hooked$1 = function hooked$1(callback, outer) {
-    var hook = hooked(outer ?
+  var hooked = function hooked(callback, outer) {
+    var hook = hooked$1(outer ?
     /*async*/
     function () {
       var ph = h,
@@ -273,27 +275,27 @@ self.uhooksFX = (function (exports) {
     } : callback);
     return hook;
   };
-  var useReducer$1 = function useReducer$1(reducer, value, init) {
-    return wrap(h, c, a, useReducer(reducer, value, init));
+  var useReducer = function useReducer(reducer, value, init) {
+    return wrap(h, c, a, useReducer$1(reducer, value, init));
   };
-  var useState$1 = function useState$1(value) {
-    return wrap(h, c, a, useState(value));
+  var useState = function useState(value) {
+    return wrap(h, c, a, useState$1(value));
   };
 
   exports.createContext = createContext;
   exports.dropEffect = dropEffect;
   exports.hasEffect = hasEffect;
-  exports.hooked = hooked$1;
+  exports.hooked = hooked;
   exports.useCallback = useCallback;
   exports.useContext = useContext;
   exports.useEffect = useEffect;
   exports.useLayoutEffect = useLayoutEffect;
   exports.useMemo = useMemo;
-  exports.useReducer = useReducer$1;
+  exports.useReducer = useReducer;
   exports.useRef = useRef;
-  exports.useState = useState$1;
+  exports.useState = useState;
   exports.wait = wait;
 
   return exports;
 
-}({}));
+})({});
